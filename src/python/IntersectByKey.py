@@ -28,6 +28,7 @@ def combineIfBothPresent(itrs):
         return []
 
 
+
 def intersectByKey(rdd1, rdd2):
     """Intersect two RDDs by key"""
     return rdd1.cogroup(rdd2).flatMapValues(combineIfBothPresent)
@@ -39,5 +40,5 @@ if __name__ == "__main__":
     sc = SparkContext(master, "IntersectByKey")
     rdd1 = sc.parallelize(
         [("coffee", 1), ("pandas", 2), ("coffee", 3), ("very", 4)])
-    rdd2 = sc.parallelize([("pandas", 20), ("pandas", 21)])
+    rdd2 = sc.parallelize([("pandas", 20), ("pandas", 21), ("very", 16)])
     print intersectByKey(rdd1, rdd2).collect()
