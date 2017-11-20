@@ -23,7 +23,9 @@ def combineIfBothPresent(itrs):
     try:
         e1 = iter1.next()
         e2 = iter2.next()
-        return itertools.chain([e1], [e2], iter1, iter2)
+        my_list = list(itertools.chain([e1], [e2], iter1, iter2))
+        # print my_list
+        return my_list
     except StopIteration:
         return []
 
