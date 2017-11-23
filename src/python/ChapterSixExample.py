@@ -61,6 +61,7 @@ def validateSign(sign):
         return False
 
 validSigns = callSigns.filter(validateSign)
+validSigns.saveAsTextFile(outputDir + "/validSigns")
 contactCounts = validSigns.map(
     lambda sign: (sign, 1)).reduceByKey((lambda x, y: x + y))
 # Force evaluation so the counters are populated
@@ -143,7 +144,9 @@ def formatCall(call):
 
 pipeInputs = contactsContactList.values().flatMap(
     lambda calls: map(formatCall, filter(hasDistInfo, calls)))
-distances = pipeInputs.pipe(SparkFiles.get(distScriptName))
+# distances = pipeInputs.pipe(SparkFiles.get(distScriptName))
+dist_input = [300000, 300000, 300000, 1, 300000, 300000, 300000, 300000, 300000, 300000,300000, 300000, 300000]
+distances = sc.parallelize(dist_input)
 print distances.collect()
 # Convert our RDD of strings to numeric data so we can compute stats and
 # remove the outliers.
@@ -151,6 +154,7 @@ distanceNumerics = distances.map(lambda string: float(string))
 stats = distanceNumerics.stats()
 stddev = stats.stdev()
 mean = stats.mean()
+print mean, stddev
 reasonableDistances = distanceNumerics.filter(
     lambda x: math.fabs(x - mean) < 3 * stddev)
 print reasonableDistances.collect()
